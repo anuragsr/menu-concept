@@ -21,27 +21,21 @@ import gsap from "gsap";
 import { l } from "./helpers";
 
 class Map3D {
-  map: google.maps.Map;
-  directionsService: google.maps.DirectionsService;
-  start: any;
-  end: any;
-  mapOptions: any;
-  mesh: THREE.Mesh;
-
   constructor() {
     this.start = { lat: 35.6594945, lng: 139.6999859 };
-    this.end = { lat: 35.66, lng: 139.705 };
+    this.end = { lat: 35.66543, lng: 139.705 };
+    // this.end = { lat: 35.66, lng: 139.705 };
     this.mapOptions = {
       tilt: 70,
+      // tilt: 0,
       heading: 0,
-      zoom: 18,
+      zoom: 20,
       center: this.start,
       mapId: "15431d2b469f209e",
     };
   }
-  initMap(): void {
-    l("map init");
-    const mapDiv = document.getElementById("map") as HTMLElement;
+  initMap() {
+    const mapDiv = document.getElementById("map");
     const map = new google.maps.Map(mapDiv, this.mapOptions);
     const directionsService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
@@ -56,7 +50,13 @@ class Map3D {
     this.addOverlay();
     this.calcRoute().then();
     this.addMarkers();
-    this.addButtons();
+    // this.addButtons();
+
+    google.maps.event.addListenerOnce(map, "tilesloaded", () => {
+      // do something only the first time the map is loaded
+      l("Loaded");
+      this.tl.play();
+    });
   }
   addOverlay() {
     const { map, mapOptions } = this;
@@ -70,7 +70,9 @@ class Map3D {
     scene.add(directionalLight);
 
     const arrowFn = () => {
-      const material = new THREE.MeshNormalMaterial();
+      const material = new THREE.MeshStandardMaterial({
+        color: "yellow",
+      });
       const coneGeom = new THREE.ConeGeometry(1, 5, 10);
       const cone = new THREE.Mesh(coneGeom, material);
 
@@ -113,13 +115,13 @@ class Map3D {
       map.controls[position].push(controlDiv);
     });
 
-    const adjustMap = function (mode: string, amount: number) {
+    const adjustMap = function (mode, amount) {
       switch (mode) {
         case "tilt":
-          map.setTilt(map.getTilt()! + amount);
+          map.setTilt(map.getTilt() + amount);
           break;
         case "rotate":
-          map.setHeading(map.getHeading()! + amount);
+          map.setHeading(map.getHeading() + amount);
           break;
         default:
           break;
@@ -154,13 +156,140 @@ class Map3D {
     // l(result);
     this.createTL(result.routes[0].overview_path);
   }
+  createPath(path) {
+    const { map, scene, overlay } = this;
+    const points = path.map((p) => overlay.latLngAltitudeToVector3(p));
+    l(points);
+
+    const shape1 = new THREE.Shape([
+      new THREE.Vector2(5 / 4, 5),
+      new THREE.Vector2(5 / 4, -5),
+      new THREE.Vector2(-5 / 4, -5),
+      new THREE.Vector2(-5 / 4, 5),
+    ]);
+    const closedSpline = new THREE.CatmullRomCurve3(points);
+    const geometry1 = new THREE.ExtrudeGeometry(shape1, {
+      steps: 50,
+      extrudePath: closedSpline,
+    });
+    const material1 = new THREE.MeshLambertMaterial({
+      color: "purple",
+      wireframe: false,
+    });
+    const mesh1 = new THREE.Mesh(geometry1, material1);
+    scene.add(mesh1);
+
+    // const clipPlanes = [
+    //   new THREE.Plane(new THREE.Vector3(1, 0, 0), 0),
+    //   new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
+    //   new THREE.Plane(new THREE.Vector3(0, 0, -1), 0),
+    // ];
+    //
+    // const group = new THREE.Group();
+    //
+    // for (let i = 1; i <= 30; i += 2) {
+    //   const geometry = new THREE.SphereGeometry(i / 30, 48, 24);
+    //
+    //   const material = new THREE.MeshLambertMaterial({
+    //     color: new THREE.Color().setHSL(
+    //       Math.random(),
+    //       0.5,
+    //       0.5,
+    //       THREE.SRGBColorSpace
+    //     ),
+    //     side: THREE.DoubleSide,
+    //     clippingPlanes: clipPlanes,
+    //     clipIntersection: true,
+    //   });
+    //
+    //   group.add(new THREE.Mesh(geometry, material));
+    // }
+    // group.scale.multiplyScalar(100);
+    // scene.add(group);
+    //
+    // // helpers
+    //
+    // const helpers = new THREE.Group();
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[0], 2, 0xff0000));
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[1], 2, 0x00ff00));
+    // helpers.add(new THREE.PlaneHelper(clipPlanes[2], 2, 0x0000ff));
+    // // helpers.visible = false;
+    // helpers.scale.multiplyScalar(100);
+    //
+    // scene.add(helpers);
+    // const geometry = new MeshLineGeometry();
+    // // geometry.setPoints(path.map((p) => overlay.latLngAltitudeToVector3(p)));
+    // const points = [];
+    // for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
+    //   points.push(Math.cos(j), Math.sin(j), 0);
+    //
+    // geometry.setPoints(path.map((p) => overlay.latLngAltitudeToVector3(p)));
+    //
+    // (window as any).geometry = geometry;
+    // const material = new MeshLineMaterial({
+    //   color: "purple",
+    //   sizeAttenuation: 0,
+    //   lineWidth: 0.0001,
+    // });
+    //
+    // const mesh = new THREE.Mesh(geometry, material);
+    // scene.add(mesh);
+    // const spline = new THREE.CatmullRomCurve3(points);
+    // const divisions = Math.round(12 * points.length);
+    // const point = new THREE.Vector3();
+    // const color = new THREE.Color();
+    // const positions = [];
+    // const colors = [];
+    //
+    // for (let i = 0, l = divisions; i < l; i++) {
+    //   const t = i / l;
+    //
+    //   spline.getPoint(t, point);
+    //   positions.push(point.x, point.y, point.z);
+    //
+    //   color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
+    //   colors.push(color.r, color.g, color.b);
+    // }
+    //
+    // // Line2 ( LineGeometry, LineMaterial )
+    //
+    // const geometry = new LineGeometry();
+    // geometry.setPositions(positions);
+    // geometry.setColors(colors);
+    //
+    // window.geometry = geometry;
+    //
+    // const matLine = new LineMaterial({
+    //   color: "purple",
+    //   linewidth: 0.01 * 1, // in world units with size attenuation, pixels otherwise
+    //   // vertexColors: true,
+    //
+    //   //resolution:  // to be set by renderer, eventually
+    //   dashed: false,
+    //   alphaToCoverage: false,
+    // });
+    //
+    // const line = new Line2(geometry, matLine);
+    // line.computeLineDistances();
+    // line.scale.set(1, 1, 1);
+    // scene.add(line);
+  }
   createTL(path) {
+    this.createPath(path);
+
     const { map, overlay, scene, mesh } = this;
     const tl = gsap.timeline({
       delay: 2,
       repeat: -1,
-      yoyo: true,
+      // yoyo: true,
+      // paused: true,
     });
+
+    this.tl = tl;
+    window.tl = tl;
+
+    const up = new THREE.Vector3(0, 1, 0);
+    const axis = new THREE.Vector3();
 
     let prevHeading = map.getHeading(),
       newHeading;
@@ -209,9 +338,15 @@ class Map3D {
       tl.to(headingObj, {
         value: newHeading,
         onUpdate: function () {
+          const fraction = this.progress();
           map.moveCamera({
             heading: headingObj.value,
           });
+
+          const tangent = pointsPath.getTangent(fraction);
+          axis.crossVectors(up, tangent).normalize();
+          const radians = Math.acos(up.dot(tangent));
+          mesh.quaternion.setFromAxisAngle(axis, radians);
         },
       }).to(cameraOptions, {
         // repeat: -1,
@@ -229,20 +364,28 @@ class Map3D {
           });
 
           overlay.latLngAltitudeToVector3(cameraOptions, mesh.position);
+          mesh.position.y += 10;
+
+          const tangent = pointsPath.getTangent(fraction);
+          axis.crossVectors(up, tangent).normalize();
+          const radians = Math.acos(up.dot(tangent));
+          mesh.quaternion.setFromAxisAngle(axis, radians);
         },
       });
 
       prevHeading = newHeading;
     }
+
+    tl.progress(0).pause();
   }
 }
 
 const mapObj = new Map3D();
 
-declare global {
-  interface Window {
-    initMap: () => void;
-  }
-}
+// declare global {
+//   interface Window {
+//     initMap: () => void;
+//   }
+// }
 
 window.initMap = mapObj.initMap.bind(mapObj);
