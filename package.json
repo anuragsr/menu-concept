@@ -26,6 +26,7 @@
   },
   "private": true,
   "dependencies": {
-    "gsap": "^3.12.4"
+    "gsap": "^3.12.4",
+    "jquery": "^3.7.1"
   }
 }

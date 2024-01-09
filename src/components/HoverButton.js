@@ -1,30 +1,10 @@
-import * as $ from "jquery";
 import gsap from "gsap";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-// import HoverButton from "./components/HoverButton";
-import { l } from "./helpers";
 
-gsap.registerPlugin(ScrollToPlugin);
-
-import "./sass/style.sass";
-window.$ = $;
-
-// Menu
-let nav = $("header#top .row"),
-  container = $(".custom-menu-anim"),
-  maxScroll = container[0].scrollWidth - container.outerWidth(),
-  menuItems = $(".menu-item-outer"),
-  lines = $(".menu-item-line"),
-  menuArr = [],
-  currLine,
-  prevLine,
-  currIdx,
-  currChild,
-  tlTimeout;
-
-class HoverButton {
-  constructor(el) {
+export default class HoverButton {
+  constructor(el, ctn, menuItems) {
     this.el = el;
+    this.container = ctn;
+    this.menuItems = menuItems;
     this.hover = false;
     this.mouseOnParent = false;
     this.mouseOnChild = false;
@@ -39,6 +19,7 @@ class HoverButton {
   }
 
   attachEvents() {
+    const { container } = this;
     container
       .on("mousemove", (e) => this.onMouseMove(e))
       .on("resize", (e) => this.calculatePosition());
@@ -68,6 +49,7 @@ class HoverButton {
   }
 
   onMouseMove(e) {
+    const { container } = this;
     this.x = this.baseX - container.scrollLeft();
     $(this.el)
       .find(".menu-item-child")
@@ -96,6 +78,7 @@ class HoverButton {
   }
 
   onHover(x, y) {
+    const { menuItems } = this;
     currIdx = menuItems.index(this.el);
     let idx = currIdx,
       newX = (x - this.x) * 0.4,
@@ -372,133 +355,3 @@ class HoverButton {
     window.location.href = url;
   }
 }
-
-class Menu {
-  constructor() {
-    l("menu init");
-  }
-  animate() {
-    // const { container, maxScroll, lines, menuItems, menuArr } = this;
-    // Move menu
-    container.on("mousemove", function (e) {
-      let ratio = e.clientX / $(this).width();
-      // $(this).scrollLeft(maxScroll * ratio);
-      gsap.to($(this), {
-        duration: 1,
-        scrollTo: { x: maxScroll * ratio },
-        ease: "power2",
-      });
-    });
-
-    // Create menu items
-    menuItems.toArray().forEach((item) => menuArr.push(new HoverButton(item)));
-
-    // Draw lines between items
-    lines.toArray().forEach((item, idx) => {
-      let x1 = menuArr[idx].x,
-        y1 = menuArr[idx].y,
-        x2 = menuArr[idx + 1].x,
-        y2 = menuArr[idx + 1].y;
-
-      gsap.set(item, {
-        css: {
-          width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
-          rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        },
-      });
-    });
-
-    // Submenu items and lines
-    menuArr.forEach((menuItem, idx) => {
-      let children = $(menuItem.el).find(".menu-item-child"),
-        childLines = $(menuItem.el).find(".menu-item-child-line");
-
-      switch (idx + 1) {
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          children.eq(0).css({
-            left: "-50%",
-          });
-
-          children.eq(1).css({
-            left: "125%",
-            top: "-25%",
-          });
-          break;
-        case 4:
-          children.eq(0).css({
-            left: "20%",
-            top: "135%",
-          });
-
-          children.eq(1).css({
-            left: "55%",
-            top: "-70%",
-          });
-
-          children.eq(2).css({
-            left: "125%",
-            top: "-25%",
-          });
-          break;
-        case 5:
-          break;
-        case 6:
-          break;
-        case 7:
-          break;
-        case 8:
-          break;
-        case 9:
-          break;
-      }
-
-      this.setPositions(children.toArray());
-      this.setChildLines(menuItem, children.toArray(), childLines);
-    });
-  }
-
-  setPositions(arr) {
-    arr.forEach((child) => {
-      const box = child.getBoundingClientRect();
-      child.baseX = box.left + box.width * 0.5;
-      child.baseY = box.top + box.height * 0.5;
-      child.x = child.baseX;
-      child.y = child.baseY;
-      child.width = box.width;
-      child.height = box.height;
-
-      gsap.set(child, { scale: 0 });
-      gsap.set($(child).find("h2"), { opacity: 0 });
-    });
-  }
-
-  setChildLines(menuItem, children, lines) {
-    children.forEach((child, idx) => {
-      let x1 = menuItem.x,
-        y1 = menuItem.y,
-        x2 = child.x,
-        y2 = child.y;
-
-      // l(x1, y1, x2, y2)
-
-      lines[idx].fullWidth = Math.sqrt(
-        Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)
-      );
-      gsap.set(lines[idx], {
-        css: {
-          width: 0,
-          rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        },
-      });
-    });
-  }
-}
-
-$(() => {
-  const menu = new Menu();
-  menu.animate();
-});
