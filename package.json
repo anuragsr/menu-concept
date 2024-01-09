@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "prettier": "2.8.0",
+    "sass": "^1.69.7",
     "vite": "^4.4.12"
   },
   "private": true,
