@@ -1,28 +1,22 @@
 {
-  "name": "gmap-three-follow",
-  "description": "Samples for Google Maps JavaScript",
-  "version": "2.1.4",
-  "keywords": [
-    "google",
-    "javascript",
-    "maps",
-    "samples"
-  ],
-  "homepage": "https://github.com/anuragsr/gmap-three-follow#readme",
+  "name": "menu-concept",
+  "description": "Menu made a while ago.",
+  "version": "0.1.0",
+  "keywords": [],
+  "homepage": "https://github.com/anuragsr/menu-concept#readme",
   "bugs": {
-    "url": "https://github.com/anuragsr/gmap-three-follow/issues"
+    "url": "https://github.com/anuragsr/menu-concept/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anuragsr/gmap-three-follow.git"
+    "url": "git+https://github.com/anuragsr/menu-concept.git"
   },
   "files": [],
   "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
-    "start": "vite",
+    "start": "vite --host=0.0.0.0",
     "build": "vite build --outDir dist",
-    "test": "tsc --no-emit",
     "preview": "vite preview"
   },
   "devDependencies": {
