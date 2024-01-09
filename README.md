@@ -1,3 +1,3 @@
 # Menu concept
 
-MOre info here later
+More info here later

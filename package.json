@@ -20,15 +20,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/google.maps": "^3.53.5",
     "prettier": "2.8.0",
-    "typescript": "^5.2.2",
     "vite": "^4.4.12"
   },
   "private": true,
   "dependencies": {
-    "@googlemaps/three": "^4.0.8",
-    "gsap": "^3.12.4",
-    "three": "^0.160.0"
+    "gsap": "^3.12.4"
   }
 }
