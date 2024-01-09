@@ -8,4 +8,5 @@ export default defineConfig({
         ? 443
         : undefined,
   },
+  base: "",
 });
