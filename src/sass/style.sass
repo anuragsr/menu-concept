@@ -1,3 +1,6 @@
+@import "./vars"
+@import "./include-media"
+
 html, body
   height: 100%
   margin: 0
@@ -5,3 +8,141 @@ html, body
 
 body
   background: #333
+
+.burger
+  @extend %j-c
+  cursor: pointer
+  height: 50px
+  width: 50px
+  border: 3px solid black
+  border-radius: 50%
+  a
+    position: relative
+    left: 2px
+
+.ripple
+  position: fixed
+  height: 70px
+  width: 70px
+  right: 1.25vw
+  top: 3vh
+  border-radius: 50%
+  background: $w
+  z-index: 0
+  transform: scale(0)
+
+.custom-menu-anim
+  position: relative
+  z-index: 2
+  background: $bg-menu
+  overflow-y: hidden
+  overflow-x: hidden
+  height: 75vh
+  display: flex
+  align-items: center
+  .ctn-menu
+    white-space: nowrap
+    padding: 0 20vh
+    .menu-item-outer
+      cursor: pointer
+      position: relative
+      z-index: 1
+      display: inline-block
+      vertical-align: top
+      height: 19vh
+      width: 19vh
+      border-radius: 15vh
+      margin-left: 2vh
+      .menu-item-desc
+        @include pa(0, 0)
+        @extend %fhw
+        z-index: 1
+        border-radius: 100%
+        background: $bg-menu
+        // opacity: .5
+        .menu-item-image
+          @extend %fhw
+          @include pa(0, 0)
+          z-index: 1
+          border-radius: 15vh
+          opacity: .7
+
+      .menu-item-name
+        @include pa('', 0, -4, '')
+        z-index: 2
+        height: 7vh
+        width: 7vh
+        border-radius: 6vh
+        background: $w
+        h2
+          font-size: 2.1vh
+          position: absolute
+          top: 38%
+          right: 45%
+          color: $b
+          text-transform: uppercase
+
+      .menu-item-line
+        position: absolute
+        top: 50%
+        left: 50%
+        width: 50%
+        height: 2px
+        background: $bdr-circ
+        z-index: 0
+        transform-origin: 0% 0%
+    
+      .menu-item-child
+        // display: none
+        // border: 1px solid blue
+        @include pa(0, 0)
+        z-index: 100
+        height: 7vh
+        width: 7vh
+        border-radius: 50%
+        background: $w
+        h2
+          font-size: 2.2vh
+          position: absolute
+          top: 25%
+          right: 45%
+          color: $b
+          text-transform: uppercase
+
+      .menu-item-child-line
+        pointer-events: none
+        position: absolute
+        top: 50%
+        left: 50%
+        width: 300px
+        height: 2px
+        background: black
+        z-index: -1
+        transform-origin: 0% 0%
+    
+      &:nth-of-type(1)
+        top: -5vh
+      &:nth-of-type(2)
+        top: 11vh
+      &:nth-of-type(3)
+        top: -19vh
+        margin-left: 2vh
+      &:nth-of-type(4)
+        top: 7vh
+        margin-left: 0vh
+      &:nth-of-type(5)
+        top: 14vh
+        margin-left: 5vh
+      &:nth-of-type(6)
+        top: -17vh
+      &:nth-of-type(7)
+        top: 6vh
+        margin-left: 0
+      &:nth-of-type(8)
+        top: -20vh
+      &:nth-of-type(9)
+        top: 12vh
+        margin-left: 0
+      &:nth-of-type(10)
+        top: -12vh
+        margin-left: 5vh
