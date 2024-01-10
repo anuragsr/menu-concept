@@ -8,149 +8,195 @@ html, body
 
 body
   font-family: "Lato", sans-serif
-  background: #333
+  background: #bbb
 
-.burger
-  @extend %j-c
-  cursor: pointer
-  height: 50px
-  width: 50px
-  border: 3px solid black
-  border-radius: 50%
-  a
-    position: relative
-    left: 2px
-
-
-.ripple
-  position: fixed
-  height: 70px
-  width: 70px
-  right: 1.25vw
-  top: 3vh
-  border-radius: 50%
-  background: $w
-  z-index: 0
-  transform: scale(0)
-
-
-.custom-menu-anim
-  position: relative
-  z-index: 2
-  background-color: $bg-menu
-  background-image: url("src/img/bg1.jpg")
-  background-size: cover
-  background-position: 50% 100%
-  overflow-y: hidden
-  overflow-x: hidden
-  height: 100vh
-  display: flex
-  align-items: center
-  .ctn-menu
-    white-space: nowrap
-    padding: 0 20vh
-    .menu-item-outer
-      cursor: pointer
+main
+  @extend %fhw
+  .burger
+    @extend %j-c
+    cursor: pointer
+    height: 50px
+    width: 50px
+    border: 3px solid black
+    border-radius: 50%
+    a
       position: relative
-      z-index: 1
-      display: inline-block
-      vertical-align: top
-      height: 19vh
-      width: 19vh
-      border-radius: 15vh
-      margin-left: 2vh
-      .menu-item-desc
+      left: 2px
+
+
+  .ctn-ripple
+    @extend %fhw
+    @extend %j-c
+    .ripple
+      position: fixed
+      height: 70px
+      width: 70px
+      right: 1.25vw
+      top: 3vh
+      border-radius: 50%
+      background: $w
+      z-index: 0
+      transform: scale(0)
+
+    .ctn-anim
+      position: relative
+      height: 360px
+      width: 347px
+      cursor: pointer
+      img, svg
         @include pa(0, 0)
-        @extend %fhw
+
+      svg
+        max-width: unset
+        height: 360*1.2px
+        width: 347*1.2px
+        top: -360*0.1px
+        left: -347*0.1px
+
+      img
+        height: unset !important
+        &.f1
+          top: 38px
+          left: 88px
+
+        &.e1
+          top: 130px
+          left: 162px
+
+        &.l1
+          left: 0px
+          top: 215px
+          transform-origin: 100% 0%
+
+        &.l2
+          left: 81px
+          top: 225px
+          transform-origin: 80% 0%
+
+        &.l3
+          left: 244px
+          top: 218px
+          transform-origin: 15% 0%
+
+
+  .custom-menu-anim
+    position: relative
+    z-index: 2
+    background-color: $bg-menu
+    background-image: url("src/img/bg1.jpg")
+    background-size: cover
+    background-position: 50% 100%
+    overflow-y: hidden
+    overflow-x: hidden
+    height: 100vh
+    display: flex
+    align-items: center
+    display: none
+    .ctn-menu
+      white-space: nowrap
+      padding: 0 20vh
+      .menu-item-outer
+        cursor: pointer
+        position: relative
         z-index: 1
-        border-radius: 100%
-        background: $bg-menu
-        // opacity: .5
-        .menu-item-image
-          @extend %fhw
-          @include pa(0, 0)
-          box-shadow: 0 0 7px 2px rgba($b, .3)
-          z-index: 1
-          border-radius: 15vh
-          opacity: .7
-
-      .menu-item-name
-        @include pa('', 0, -4, '')
-        z-index: 2
-        height: 7vh
-        width: 7vh
-        border-radius: 6vh
-        background: $w
-        h2
-          font-size: 2.1vh
-          position: absolute
-          top: 18%
-          right: 35%
-          color: $b
-          text-transform: uppercase
-
-      .menu-item-line
-        position: absolute
-        top: 50%
-        left: 50%
-        width: 50%
-        height: 2px
-        background: $bdr-circ
-        z-index: 0
-        transform-origin: 0% 0%
-    
-      .menu-item-child
-        // display: none
-        // border: 1px solid blue
-        @include pa(0, 0)
-        z-index: 100
-        height: 7vh
-        width: 7vh
-        border-radius: 50%
-        background: #e7e7e7
-        box-shadow: 0 0 5px 0px rgba($b, .2)
-        h2
-          font-size: 2.2vh
-          position: absolute
-          top: 25%
-          right: 45%
-          color: $b
-          text-transform: uppercase
-
-      .menu-item-child-line
-        pointer-events: none
-        position: absolute
-        top: 50%
-        left: 50%
-        width: 300px
-        height: 2px
-        background: $bdr-circ
-        z-index: -1
-        transform-origin: 0% 0%
-    
-      &:nth-of-type(1)
-        top: -5vh
-      &:nth-of-type(2)
-        top: 11vh
-      &:nth-of-type(3)
-        top: -19vh
+        display: inline-block
+        vertical-align: top
+        height: 19vh
+        width: 19vh
+        border-radius: 15vh
         margin-left: 2vh
-      &:nth-of-type(4)
-        top: 7vh
-        margin-left: 0vh
-      &:nth-of-type(5)
-        top: 14vh
-        margin-left: 5vh
-      &:nth-of-type(6)
-        top: -17vh
-      &:nth-of-type(7)
-        top: 6vh
-        margin-left: 0
-      &:nth-of-type(8)
-        top: -20vh
-      &:nth-of-type(9)
-        top: 12vh
-        margin-left: 0
-      &:nth-of-type(10)
-        top: -12vh
-        margin-left: 5vh
+        .menu-item-desc
+          @include pa(0, 0)
+          @extend %fhw
+          z-index: 1
+          border-radius: 100%
+          background: $bg-menu
+          // opacity: .5
+          .menu-item-image
+            @extend %fhw
+            @include pa(0, 0)
+            box-shadow: 0 0 7px 2px rgba($b, .3)
+            z-index: 1
+            border-radius: 15vh
+            opacity: .7
+
+        .menu-item-name
+          @include pa('', 0, -4, '')
+          z-index: 2
+          height: 7vh
+          width: 7vh
+          border-radius: 6vh
+          background: $w
+          h2
+            font-size: 2.1vh
+            position: absolute
+            top: 18%
+            right: 35%
+            color: $b
+            text-transform: uppercase
+
+        .menu-item-line
+          position: absolute
+          top: 50%
+          left: 50%
+          width: 50%
+          height: 2px
+          background: $bdr-circ
+          z-index: 0
+          transform-origin: 0% 0%
+
+        .menu-item-child
+          // display: none
+          // border: 1px solid blue
+          @include pa(0, 0)
+          z-index: 100
+          height: 7vh
+          width: 7vh
+          border-radius: 50%
+          background: #e7e7e7
+          box-shadow: 0 0 5px 0px rgba($b, .2)
+          h2
+            font-size: 2.2vh
+            position: absolute
+            top: 25%
+            right: 45%
+            color: $b
+            text-transform: uppercase
+
+        .menu-item-child-line
+          pointer-events: none
+          position: absolute
+          top: 50%
+          left: 50%
+          width: 300px
+          height: 2px
+          background: $bdr-circ
+          z-index: -1
+          transform-origin: 0% 0%
+
+        &:nth-of-type(1)
+          top: -5vh
+        &:nth-of-type(2)
+          top: 11vh
+        &:nth-of-type(3)
+          top: -19vh
+          margin-left: 2vh
+        &:nth-of-type(4)
+          top: 7vh
+          margin-left: 0vh
+        &:nth-of-type(5)
+          top: 14vh
+          margin-left: 5vh
+        &:nth-of-type(6)
+          top: -17vh
+        &:nth-of-type(7)
+          top: 6vh
+          margin-left: 0
+        &:nth-of-type(8)
+          top: -20vh
+        &:nth-of-type(9)
+          top: 12vh
+          margin-left: 0
+        &:nth-of-type(10)
+          top: -12vh
+          margin-left: 5vh

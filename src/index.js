@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { l } from "./helpers";
+import { l, describeArc } from "./helpers";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -380,11 +380,20 @@ class HoverButton {
   }
 }
 
-class Menu {
+class MenuTransition {
   constructor() {
-    l("menu init");
+    l("menuTr init");
   }
+
   animate() {
+    // Menu
+    this.animateMenu();
+
+    // Logo
+    this.animateLogo();
+  }
+
+  animateMenu() {
     // Move menu
     container.on("mousemove", function (e) {
       let ratio = e.clientX / $(this).width();
@@ -484,6 +493,237 @@ class Menu {
     });
   }
 
+  animateLogo() {
+    $("svg.header-logo path.arc0").attr("d", describeArc(233, 183, 75, 15, 45));
+    $("svg.header-logo path.arc1").attr("d", describeArc(233, 183, 98, 15, 45));
+    $("svg.header-logo path.arc2").attr(
+      "d",
+      describeArc(233, 183, 140, 15, 45)
+    );
+
+    let eyeTl,
+      lightTl,
+      legsTl,
+      radObj = [{ r: 75 }, { r: 98 }, { r: 140 }],
+      strObj = [{ s: 0 }, { s: 20 }, { s: 30 }];
+
+    $(".ctn-anim").on({
+      mouseenter: (e) => {
+        eyeTl = gsap
+          .timeline()
+          .to("img.e1", { duration: 0.1, scaleY: 0.2, y: -35 })
+          .to("img.e1", { duration: 0.1, delay: 0.1, scaleY: 1 });
+
+        lightTl = gsap
+          .timeline()
+          .to(
+            strObj[2],
+            {
+              duration: 0.2,
+              s: 0,
+              onUpdate: function () {
+                $("svg.header-logo path.arc2").attr(
+                  "stroke-width",
+                  this.targets()[0].s
+                );
+              },
+            },
+            "l0"
+          )
+          .to(
+            radObj[2],
+            {
+              duration: 0.2,
+              r: 160,
+              onUpdate: function () {
+                $("svg.header-logo path.arc2").attr(
+                  "d",
+                  describeArc(233, 183, this.targets()[0].r, 15, 45)
+                );
+              },
+            },
+            "l0"
+          )
+          .to(
+            strObj[1],
+            {
+              duration: 0.2,
+              s: 30,
+              onUpdate: function () {
+                $("svg.header-logo path.arc1").attr(
+                  "stroke-width",
+                  this.targets()[0].s
+                );
+              },
+            },
+            "l0"
+          )
+          .to(
+            radObj[1],
+            {
+              duration: 0.2,
+              r: 140,
+              onUpdate: function () {
+                $("svg.header-logo path.arc1").attr(
+                  "d",
+                  describeArc(233, 183, this.targets()[0].r, 15, 45)
+                );
+              },
+            },
+            "l0"
+          )
+          .to(
+            strObj[1],
+            {
+              duration: 0.2,
+              s: 0,
+              onUpdate: function () {
+                $("svg.header-logo path.arc1").attr(
+                  "stroke-width",
+                  this.targets()[0].s
+                );
+              },
+            },
+            "l1"
+          )
+          .to(
+            radObj[1],
+            {
+              duration: 0.2,
+              r: 160,
+              onUpdate: function () {
+                $("svg.header-logo path.arc1").attr(
+                  "d",
+                  describeArc(233, 183, this.targets()[0].r, 15, 45)
+                );
+              },
+            },
+            "l1"
+          )
+          .to(
+            strObj[0],
+            {
+              duration: 0.3,
+              s: 30,
+              onUpdate: function () {
+                $("svg.header-logo path.arc0").attr(
+                  "stroke-width",
+                  this.targets()[0].s
+                );
+              },
+            },
+            "l1"
+          )
+          .to(
+            radObj[0],
+            {
+              duration: 0.3,
+              r: 140,
+              onUpdate: function () {
+                $("svg.header-logo path.arc0").attr(
+                  "d",
+                  describeArc(233, 183, this.targets()[0].r, 15, 45)
+                );
+              },
+            },
+            "l1"
+          );
+
+        legsTl = gsap
+          .timeline()
+          .to(
+            "img.l1",
+            {
+              duration: 0.3,
+              rotationZ: -5,
+              ease: "back.in",
+            },
+            "l0"
+          )
+          .to(
+            "img.l2",
+            {
+              // delay: .05,
+              duration: 0.3,
+              rotationZ: -3,
+              ease: "back.in",
+            },
+            "l0"
+          )
+          .to(
+            "img.l3",
+            {
+              duration: 0.3,
+              rotationZ: 5,
+              ease: "back.in",
+            },
+            "l0"
+          )
+          .to(
+            "img.l1",
+            {
+              duration: 0.2,
+              rotationZ: 7,
+              // ease: "back.in"
+            },
+            "l1"
+          )
+          .to(
+            "img.l2",
+            {
+              duration: 0.2,
+              delay: 0.05,
+              rotationZ: 5,
+              // ease: "back.in"
+            },
+            "l1"
+          )
+          .to(
+            "img.l3",
+            {
+              duration: 0.2,
+              rotationZ: -7,
+              // ease: "back.in"
+            },
+            "l1"
+          )
+          .to(
+            "img.l1",
+            {
+              duration: 0.4,
+              rotationZ: 0,
+              ease: "back.out",
+            },
+            "l2"
+          )
+          .to(
+            "img.l2",
+            {
+              // delay: .05,
+              duration: 0.4,
+              rotationZ: 0,
+              ease: "back.out",
+            },
+            "l2"
+          )
+          .to(
+            "img.l3",
+            {
+              duration: 0.4,
+              rotationZ: 0,
+              ease: "back.out",
+            },
+            "l2"
+          );
+      },
+      mouseleave: (e) => {
+        eyeTl.reverse();
+        lightTl.reverse();
+        legsTl.reverse();
+      },
+    });
+  }
+
   setPositions(arr) {
     arr.forEach((child) => {
       const box = child.getBoundingClientRect();
@@ -522,6 +762,6 @@ class Menu {
 }
 
 $(() => {
-  const menu = new Menu();
-  menu.animate();
+  const menuTr = new MenuTransition();
+  menuTr.animate();
 });
