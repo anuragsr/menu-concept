@@ -1,17 +1,16 @@
 import * as $ from "jquery";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-// import HoverButton from "./components/HoverButton";
 import { l } from "./helpers";
 
 gsap.registerPlugin(ScrollToPlugin);
 
 import "./sass/style.sass";
 window.$ = $;
+window.ctl = [];
 
 // Menu
-let nav = $("header#top .row"),
-  container = $(".custom-menu-anim"),
+let container = $(".custom-menu-anim"),
   maxScroll = container[0].scrollWidth - container.outerWidth(),
   menuItems = $(".menu-item-outer"),
   lines = $(".menu-item-line"),
@@ -33,9 +32,59 @@ class HoverButton {
     this.children = $(this.el).find(".menu-item-child");
     this.childLines = $(this.el).find(".menu-item-child-line");
     this.childTitles = $(this.el).find(".menu-item-child h2");
-    this.childTl = gsap.timeline();
+    this.init();
+  }
+
+  init() {
     this.calculatePosition();
     this.attachEvents();
+  }
+
+  createTl() {
+    this.childTl = gsap.timeline({
+      paused: true,
+    });
+
+    if (this.children.length) {
+      // window.ctl.push(this.childTl);
+      const widths = this.childLines.toArray().map((c) => c.fullWidth);
+      this.childTl
+        .fromTo(
+          this.childLines,
+          { width: 0 },
+          {
+            width: gsap.utils.wrap(widths),
+            duration: 0.2,
+            stagger: 0.05,
+            ease: "power2.out",
+          }
+        )
+        .fromTo(
+          this.children,
+          {
+            scale: 0,
+          },
+          {
+            duration: 0.2,
+            stagger: 0.05,
+            scale: 1,
+            ease: "power2.out",
+          }
+        )
+        .fromTo(
+          this.childTitles,
+          {
+            x: -25,
+            opacity: 0,
+          },
+          {
+            duration: 0.2,
+            x: 0,
+            opacity: 1,
+            ease: "power2.out",
+          }
+        );
+    }
   }
 
   attachEvents() {
@@ -106,14 +155,14 @@ class HoverButton {
       x: (x - this.x) * 0.4,
       y: (y - this.y) * 0.4,
       scale: 1.1,
-      ease: "Power2.easeOut",
+      ease: "power2.out",
     });
 
     gsap.to($(".menu-item-image").eq(idx), {
       duration: 0.7,
       border: "6px solid #0597ab",
       opacity: 1,
-      ease: "Power2.easeOut",
+      ease: "power2.out",
     });
 
     gsap.to($(".menu-item-name").eq(idx), {
@@ -121,7 +170,7 @@ class HoverButton {
       delay: 0.1,
       x: (x - this.x) * 0.4,
       y: (y - this.y) * 0.4,
-      ease: "Power2.easeOut",
+      ease: "power2.out",
     });
 
     if (idx === 0) {
@@ -139,7 +188,7 @@ class HoverButton {
         y: newY,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
     } else if (idx === menuItems.length - 1) {
       prevLine = lines.eq(lines.length - 1); // Only n-1 lines
@@ -153,7 +202,7 @@ class HoverButton {
         duration: 0.7,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
     } else {
       currLine = lines.eq(idx);
@@ -171,7 +220,7 @@ class HoverButton {
         y: newY,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
 
       // Line to left of circle
@@ -184,7 +233,7 @@ class HoverButton {
         duration: 0.7,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
     }
   }
@@ -196,14 +245,14 @@ class HoverButton {
       x: 0,
       y: 0,
       scale: 1,
-      ease: "Power2.easeOut",
+      ease: "power2.out",
     });
 
     gsap.to($(".menu-item-image"), {
       duration: 0.7,
       border: "0px solid #0597ab",
       opacity: 0.7,
-      ease: "Power2.easeOut",
+      ease: "power2.out",
     });
 
     gsap.to($(".menu-item-name"), {
@@ -211,7 +260,7 @@ class HoverButton {
       delay: 0.1,
       x: 0,
       y: 0,
-      ease: "Power2.easeOut",
+      ease: "power2.out",
     });
 
     let idx = currIdx;
@@ -227,7 +276,7 @@ class HoverButton {
         y: 0,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
     } else if (idx === menuItems.length - 1) {
       let x1 = menuArr[idx - 1].x,
@@ -239,7 +288,7 @@ class HoverButton {
         duration: 0.7,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
     } else {
       let x1 = menuArr[idx].x,
@@ -253,7 +302,7 @@ class HoverButton {
         y: 0,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
 
       (x1 = menuArr[idx - 1].x),
@@ -265,7 +314,7 @@ class HoverButton {
         duration: 0.7,
         width: Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)),
         rotationZ: Math.atan2(y2 - y1, x2 - x1) + "rad",
-        ease: "Power2.easeOut",
+        ease: "power2.out",
       });
     }
   }
@@ -273,51 +322,9 @@ class HoverButton {
   onMouseEnter() {
     // l("onMouseEnter")
     this.mouseOnParent = true;
-    if (this.children.length && this.childTl && this.childTl.progress() === 0) {
-      this.childTl = gsap.timeline();
-      this.childTl
-        .staggerFromTo(
-          this.childLines,
-          0.2,
-          {
-            width: 0,
-          },
-          {
-            cycle: {
-              width: function (i, target) {
-                return target.fullWidth;
-              },
-              ease: ["Power2.easeOut"],
-            },
-          },
-          0.05
-        )
-        .staggerFromTo(
-          this.children,
-          0.2,
-          {
-            scale: 0,
-          },
-          {
-            scale: 1,
-            ease: "Power2.easeOut",
-          },
-          0.05
-        )
-        .staggerFromTo(
-          this.childTitles,
-          0.2,
-          {
-            x: -25,
-            opacity: 0,
-          },
-          {
-            x: 0,
-            opacity: 1,
-            ease: "Power2.easeOut",
-          },
-          0.05
-        );
+    // if (this.children.length && this.childTl && this.childTl.progress() === 0) {
+    if (this.children.length) {
+      this.childTl.play();
     }
   }
 
@@ -326,7 +333,7 @@ class HoverButton {
     this.mouseOnParent = false;
     tlTimeout = setTimeout(() => {
       if (!this.mouseOnChild && !this.mouseOnParent) {
-        this.childTl.reverse().timeScale(1.5);
+        this.childTl.reverse();
       }
     }, 2000);
   }
@@ -350,7 +357,7 @@ class HoverButton {
       onComplete: () => {
         tlTimeout = setTimeout(() => {
           if (!this.mouseOnChild && !this.mouseOnParent) {
-            this.childTl.reverse().timeScale(1.5);
+            this.childTl.reverse();
           }
         }, 2000);
       },
@@ -378,7 +385,6 @@ class Menu {
     l("menu init");
   }
   animate() {
-    // const { container, maxScroll, lines, menuItems, menuArr } = this;
     // Move menu
     container.on("mousemove", function (e) {
       let ratio = e.clientX / $(this).width();
@@ -458,6 +464,7 @@ class Menu {
 
       this.setPositions(children.toArray());
       this.setChildLines(menuItem, children.toArray(), childLines);
+      menuItem.createTl();
     });
   }
 
