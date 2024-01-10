@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import $ from "jquery";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { l, describeArc } from "./helpers";
@@ -406,7 +406,7 @@ class MenuTransition {
 
       gsap.to(".custom-menu-anim", {
         duration: 2,
-        backgroundPosition: `50% ${ratio * 100}%`,
+        backgroundPosition: `50% ${40 + ratio * 10}%`,
         ease: "power2",
       });
     });
@@ -751,6 +751,7 @@ class MenuTransition {
 
     $(".burger").on({
       click: (e) => {
+        gsap.to(".burger", { duration: 0.5, rotationZ: 180 });
         menuOpenTl.timeScale(1.5).reverse();
       },
     });
@@ -887,6 +888,7 @@ class AttrCircle {
   }
 }
 
+// new AttrCircle({ el: $(".ctn-anim-outer")[0] });
 new AttrCircle({ el: $(".burger")[0] });
 
 $(() => {
