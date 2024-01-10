@@ -17,22 +17,34 @@ main
     cursor: pointer
     height: 50px
     width: 50px
-    border: 3px solid black
+    border: 5px solid #1997aa
     border-radius: 50%
-    a
-      position: relative
-      left: 2px
+    position: fixed
+    z-index: 1
+    top: 50px
+    right: 50px
+    //left: calc(50% - 25px)
+    .line
+      height: 2px
+      width: 30px
+      background: $b
+      &.line1
+        transform: rotateZ(-45deg)
+      &.line2
+        transform: rotateZ(45deg)
 
 
   .ctn-ripple
     @extend %fhw
     @extend %j-c
+    @include pa(0, 0)
     .ripple
       position: fixed
       height: 70px
       width: 70px
-      right: 1.25vw
-      top: 3vh
+
+      //right: 1.25vw
+      //top: 3vh
       border-radius: 50%
       background: $w
       z-index: 0
@@ -80,6 +92,7 @@ main
 
 
   .custom-menu-anim
+    pointer-events: none
     position: relative
     z-index: 2
     background-color: $bg-menu
@@ -91,7 +104,8 @@ main
     height: 100vh
     display: flex
     align-items: center
-    display: none
+    opacity: 0
+    //display: none
     .ctn-menu
       white-space: nowrap
       padding: 0 20vh

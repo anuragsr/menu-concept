@@ -46,7 +46,7 @@ class HoverButton {
     });
 
     if (this.children.length) {
-      // window.ctl.push(this.childTl);
+      window.ctl.push(this.childTl);
       const widths = this.childLines.toArray().map((c) => c.fullWidth);
       this.childTl
         .fromTo(
@@ -407,7 +407,6 @@ class MenuTransition {
       gsap.to(".custom-menu-anim", {
         duration: 2,
         backgroundPosition: `50% ${ratio * 100}%`,
-        // scrollTo: { x: maxScroll * ratio },
         ease: "power2",
       });
     });
@@ -507,7 +506,34 @@ class MenuTransition {
       radObj = [{ r: 75 }, { r: 98 }, { r: 140 }],
       strObj = [{ s: 0 }, { s: 20 }, { s: 30 }];
 
+    const menuOpenTl = gsap
+      .timeline({
+        paused: true,
+        onComplete: () => {
+          gsap.set(".custom-menu-anim", {
+            pointerEvents: "auto",
+          });
+        },
+        onReverseComplete: () => {
+          gsap.set(".custom-menu-anim", {
+            pointerEvents: "none",
+          });
+        },
+      })
+      .to(".ripple", {
+        duration: 0.4,
+        scale: 30,
+      })
+      .to(".custom-menu-anim", {
+        duration: 1,
+        opacity: 1,
+      });
+    window.menuOpenTl = menuOpenTl;
+
     $(".ctn-anim").on({
+      click: (e) => {
+        menuOpenTl.timeScale(1).play();
+      },
       mouseenter: (e) => {
         eyeTl = gsap
           .timeline()
@@ -722,6 +748,12 @@ class MenuTransition {
         legsTl.reverse();
       },
     });
+
+    $(".burger").on({
+      click: (e) => {
+        menuOpenTl.timeScale(1.5).reverse();
+      },
+    });
   }
 
   setPositions(arr) {
@@ -760,6 +792,102 @@ class MenuTransition {
     });
   }
 }
+
+// Generic class for attraction circle
+class AttrCircle {
+  constructor(options) {
+    this.el = options.el;
+    if (options.borderColor) {
+      this.borderColor = options.borderColor;
+      $(this.el).css("border-color", options.borderColor);
+    }
+
+    this.noZoom = !!options.noZoom;
+    this.hover = false;
+    this.calculatePosition();
+    this.attachEventsListener();
+  }
+
+  attachEventsListener() {
+    window.addEventListener("mousemove", (e) => this.onMouseMove(e));
+    window.addEventListener("resize", (e) => this.calculatePosition(e));
+  }
+
+  calculatePosition() {
+    gsap.set(this.el, {
+      x: 0,
+      y: 0,
+      scale: 1,
+    });
+    const box = this.el.getBoundingClientRect();
+    this.baseX = box.left + box.width * 0.5;
+    this.baseY = box.top + box.height * 0.5;
+    this.x = this.baseX;
+    this.y = this.baseY;
+    this.width = box.width;
+    this.height = box.height;
+  }
+
+  onMouseMove(e) {
+    let box = this.el.getBoundingClientRect();
+    this.y = box.top + box.height * 0.5;
+    let hover = false;
+    let hoverArea = this.hover ? 0.65 : 0.55;
+    let x = e.clientX - this.x;
+    let y = e.clientY - this.y;
+    let distance = Math.sqrt(x * x + y * y);
+    if (distance < this.width * hoverArea) {
+      hover = true;
+      if (!this.hover) {
+        this.hover = true;
+      }
+      this.onHover(e.clientX, e.clientY);
+    }
+
+    if (!hover && this.hover) {
+      this.onLeave();
+      this.hover = false;
+    }
+  }
+
+  onHover(x, y) {
+    gsap.to(this.el, {
+      duration: 0.7,
+      x: (x - this.x) * 0.2,
+      y: (y - this.y) * 0.2,
+      scale: this.noZoom ? 1 : 1.2,
+      ease: "power2.out",
+    });
+
+    if (this.borderColor) {
+      gsap.to(this.el, {
+        duration: 0.7,
+        border: "6px solid " + this.borderColor,
+        ease: "power2.out",
+      });
+    }
+  }
+
+  onLeave() {
+    gsap.to(this.el, {
+      duration: 0.7,
+      x: 0,
+      y: 0,
+      scale: 1,
+      ease: "power2.out",
+    });
+
+    if (this.borderColor) {
+      gsap.to(this.el, {
+        duration: 0.7,
+        border: "1px solid " + this.borderColor,
+        ease: "power2.out",
+      });
+    }
+  }
+}
+
+new AttrCircle({ el: $(".burger")[0] });
 
 $(() => {
   const menuTr = new MenuTransition();
