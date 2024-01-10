@@ -160,7 +160,7 @@ class HoverButton {
 
     gsap.to($(".menu-item-image").eq(idx), {
       duration: 0.7,
-      border: "6px solid #0597ab",
+      border: "10px solid #0597ab",
       opacity: 1,
       ease: "power2.out",
     });
@@ -394,6 +394,13 @@ class Menu {
         scrollTo: { x: maxScroll * ratio },
         ease: "power2",
       });
+
+      gsap.to(".custom-menu-anim", {
+        duration: 2,
+        backgroundPosition: `50% ${ratio * 100}%`,
+        // scrollTo: { x: maxScroll * ratio },
+        ease: "power2",
+      });
     });
 
     // Create menu items
@@ -455,6 +462,15 @@ class Menu {
         case 6:
           break;
         case 7:
+          children.eq(0).css({
+            left: "50%",
+            top: "150%",
+          });
+
+          children.eq(1).css({
+            left: "30%",
+            top: "-170%",
+          });
           break;
         case 8:
           break;

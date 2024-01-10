@@ -37,7 +37,10 @@ body
 .custom-menu-anim
   position: relative
   z-index: 2
-  background: $bg-menu
+  background-color: $bg-menu
+  background-image: url("src/img/bg1.jpg")
+  background-size: cover
+  background-position: 50% 100%
   overflow-y: hidden
   overflow-x: hidden
   height: 100vh
@@ -66,6 +69,7 @@ body
         .menu-item-image
           @extend %fhw
           @include pa(0, 0)
+          box-shadow: 0 0 7px 2px rgba($b, .3)
           z-index: 1
           border-radius: 15vh
           opacity: .7
@@ -80,8 +84,8 @@ body
         h2
           font-size: 2.1vh
           position: absolute
-          top: 38%
-          right: 45%
+          top: 18%
+          right: 35%
           color: $b
           text-transform: uppercase
 
@@ -103,7 +107,8 @@ body
         height: 7vh
         width: 7vh
         border-radius: 50%
-        background: $w
+        background: #e7e7e7
+        box-shadow: 0 0 5px 0px rgba($b, .2)
         h2
           font-size: 2.2vh
           position: absolute
